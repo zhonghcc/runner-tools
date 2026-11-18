@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#B7832F"/>
+  <!-- 麦秆 -->
+  <path d="M32 56 C32 44 32 30 33 12" stroke="#FFF6E2" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+  <!-- 麦粒，左右交错 -->
+  <g fill="#FFF6E2">
+    <ellipse cx="27.2" cy="20" rx="3.2" ry="5.6" transform="rotate(-28 27.2 20)"/>
+    <ellipse cx="38.6" cy="21.5" rx="3.2" ry="5.6" transform="rotate(28 38.6 21.5)"/>
+    <ellipse cx="26.6" cy="29.5" rx="3.2" ry="5.6" transform="rotate(-28 26.6 29.5)"/>
+    <ellipse cx="38.2" cy="31" rx="3.2" ry="5.6" transform="rotate(28 38.2 31)"/>
+    <ellipse cx="26.4" cy="39" rx="3.2" ry="5.6" transform="rotate(-28 26.4 39)"/>
+    <ellipse cx="37.8" cy="40.5" rx="3.2" ry="5.6" transform="rotate(28 37.8 40.5)"/>
+    <ellipse cx="33.2" cy="11" rx="2.8" ry="5" />
+  </g>
+</svg>
