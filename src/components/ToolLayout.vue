@@ -10,7 +10,6 @@
     </header>
 
     <div class="tool-body">
-      <div class="no-print"><QuoteBar /></div>
       <main class="tool-main">
         <slot />
       </main>
@@ -20,7 +19,6 @@
 </template>
 
 <script setup lang="ts">
-import QuoteBar from './QuoteBar.vue'
 import SiteFooter from './SiteFooter.vue'
 
 // 功能页按手机竖屏设计：单栏，最宽 520px；在 PC 上居中显示
@@ -47,7 +45,7 @@ defineProps<{ title: string }>()
 .back { display: flex; align-items: center; gap: 2px; color: var(--gold-deep); padding: 6px 4px; border-radius: 8px; }
 .back:hover { background: var(--gold-soft); text-decoration: none; }
 h1 { margin: 0; text-align: center; font-size: 1.05rem; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.tool-body { max-width: 520px; margin: 0 auto; padding: 0 14px; }
+.tool-body { max-width: 520px; margin: 0 auto; padding: 14px 14px 0; }
 @media (min-width: 560px) {
   /* PC 上给单栏一个浅色边界，像一张竖放的纸 */
   .tool-page { background: linear-gradient(90deg, #f4ede0 0, var(--bg) 18%, var(--bg) 82%, #f4ede0 100%); }

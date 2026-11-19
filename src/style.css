@@ -127,3 +127,8 @@ table.num td.wrap { white-space: normal; }
   body, :root { background: #fff; }
   .card { box-shadow: none; border: none; padding: 0; }
 }
+
+/* 主页在 PC 上是深色，滚动越界时露出的底色也跟着变深 */
+@media (min-width: 960px) {
+  html.home-dark, html.home-dark body { background: #0d0b08; }
+}
