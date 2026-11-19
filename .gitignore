@@ -3,3 +3,6 @@ dist
 dev-dist
 .DS_Store
 *.local
+
+# 部署脚本与服务器配置只留在本机，不进公开仓库
+deploy.local/

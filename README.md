@@ -39,7 +39,6 @@ src/
   components/  ToolLayout 功能页竖屏外壳、QuoteBar 名言、ToolIcon 图标等
   views/       HomeView 主页；tools/ 下每个工具一个页面
 tests/         单元测试；有氧测试用 FIT SDK 编码器合成记录来验证
-deploy/        部署脚本与宝塔伪静态配置
 ```
 
 ## 有氧基础测试的判定
@@ -62,10 +61,7 @@ npm run build    # 类型检查并构建到 dist/
 
 ## 部署
 
-1. DNSPod 添加 `run` 的 A 记录，指向服务器
-2. 宝塔添加站点 run.zhonghcc.com（纯静态），申请证书并开启强制 HTTPS
-3. 站点设置 → 伪静态，粘贴 `deploy/baota-site.conf`
-4. 本机执行 `deploy/deploy.sh`
+`npm run build` 产出的 `dist/` 是纯静态文件，可以放在任何静态托管上。Web 服务器需要把找不到的路径回落到 `index.html`（单页应用的前端路由），`index.html` 与 `sw.js` 建议不缓存。
 
 ## 已知差异
 
