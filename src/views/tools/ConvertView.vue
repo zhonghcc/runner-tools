@@ -1,6 +1,5 @@
 <template>
   <div class="card">
-    <h2>配速换算</h2>
     <div class="chips mode">
       <button v-for="m in modes" :key="m.key" type="button" class="chip" :class="{ active: mode === m.key }" @click="mode = m.key">{{ m.label }}</button>
     </div>
@@ -32,13 +31,13 @@
     <h2>跑步机时速对照</h2>
     <div class="table-wrap">
       <table class="num">
-        <thead><tr><th>时速</th><th>每公里</th><th>每英里</th><th>400 米</th><th>全马用时</th></tr></thead>
+        <thead><tr><th>公里/时</th><th>每公里</th><th>每英里</th><th class="hide-narrow">400 米</th><th>全马</th></tr></thead>
         <tbody>
           <tr v-for="k in treadmill" :key="k">
-            <td>{{ k.toFixed(1) }} 公里/时</td>
+            <td>{{ k.toFixed(1) }}</td>
             <td>{{ formatPace(paceFromKmh(k)) }}</td>
             <td>{{ formatPace(pacePerMile(paceFromKmh(k))) }}</td>
-            <td>{{ formatShort(lapTime(paceFromKmh(k))) }}</td>
+            <td class="hide-narrow">{{ formatShort(lapTime(paceFromKmh(k))) }}</td>
             <td>{{ formatDuration(timeFromPace(paceFromKmh(k), 42195)) }}</td>
           </tr>
         </tbody>

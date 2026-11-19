@@ -27,7 +27,11 @@ h2 { font-size: 1.15rem; }
 h3 { font-size: 1rem; }
 p { margin: 0 0 0.8em; }
 
-.container { max-width: 880px; margin: 0 auto; padding: 0 16px; }
+/* 功能页按容器宽度而不是屏幕宽度适配：PC 上也是 520px 的竖屏单栏 */
+.tool-main { container-type: inline-size; }
+@container (max-width: 420px) {
+  .hide-narrow { display: none; }
+}
 
 .card {
   background: var(--card);
@@ -94,7 +98,7 @@ tbody tr:last-child td { border-bottom: none; }
 /* 数字表格不折行，放不下时横向滚动 */
 table.num td, table.num th { white-space: nowrap; }
 table.num td.wrap { white-space: normal; }
-@media (max-width: 600px) { th, td { padding: 7px 4px; font-size: 0.9rem; } }
+@container (max-width: 420px) { th, td { padding: 7px 4px; font-size: 0.9rem; } }
 
 .big { font-size: 2rem; font-weight: 600; letter-spacing: 0.5px; }
 .badge {

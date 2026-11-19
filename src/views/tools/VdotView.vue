@@ -1,6 +1,5 @@
 <template>
   <div class="card">
-    <h2>跑力与训练区间</h2>
     <p class="muted">输入一个近期全力跑出的比赛成绩，或点选热门目标，看看达成它需要什么样的训练配速。</p>
     <RaceInput />
   </div>
@@ -27,19 +26,24 @@
       <div class="table-wrap">
         <table class="num">
           <thead>
-            <tr><th>区间</th><th>每公里</th><th class="hide-xs">时速</th><th>400 米</th><th class="hide-sm">用途</th></tr>
+            <tr><th>区间</th><th>每公里</th><th class="hide-narrow">时速</th><th>400 米</th></tr>
           </thead>
           <tbody>
             <tr v-for="z in zones" :key="z.zone.code">
               <td><span class="badge">{{ z.zone.code }}</span> {{ z.zone.name }}</td>
               <td>{{ paceRange(z) }}</td>
-              <td class="hide-xs">{{ speedRange(z) }}</td>
+              <td class="hide-narrow">{{ speedRange(z) }}</td>
               <td>{{ lapRange(z) }}</td>
-              <td class="hide-sm wrap muted small">{{ z.zone.purpose }}</td>
             </tr>
           </tbody>
         </table>
       </div>
+      <dl class="purposes small">
+        <template v-for="z in zones" :key="z.zone.code">
+          <dt><span class="badge">{{ z.zone.code }}</span></dt>
+          <dd class="muted">{{ z.zone.purpose }}</dd>
+        </template>
+      </dl>
     </div>
 
     <div class="card">
@@ -96,6 +100,6 @@ const lapRange = (z: ZonePace) =>
 <style scoped>
 .headline { display: flex; gap: 40px; flex-wrap: wrap; margin-bottom: 8px; }
 .unit { font-size: 0.9rem; color: var(--muted); font-weight: 400; margin-left: 2px; }
-@media (max-width: 600px) { .hide-sm { display: none; } }
-@media (max-width: 420px) { .hide-xs { display: none; } }
+.purposes { display: grid; grid-template-columns: auto 1fr; gap: 4px 8px; margin: 12px 0 0; padding-top: 10px; border-top: 1px dashed var(--line); }
+.purposes dd { margin: 0; }
 </style>

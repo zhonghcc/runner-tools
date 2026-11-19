@@ -1,6 +1,5 @@
 <template>
   <div class="card">
-    <h2>心率区间</h2>
     <div class="row">
       <div class="field">
         <label for="age">年龄</label>

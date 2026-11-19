@@ -1,6 +1,5 @@
 <template>
   <div class="card no-print">
-    <h2>比赛配速手环</h2>
     <p class="muted">给定目标完赛时间和配速策略，生成每个分段的累计时间。打印后剪成条，贴在手腕或号码布背面。</p>
     <div class="row">
       <div class="field">
@@ -80,7 +79,7 @@ const print = () => window.print()
 </script>
 
 <style scoped>
-.band { max-width: 420px; }
+
 .band-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 6px; }
 .band td, .band th { padding: 5px 6px; }
 tr.half td { background: var(--gold-soft); }

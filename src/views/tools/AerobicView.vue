@@ -1,6 +1,5 @@
 <template>
   <div class="card">
-    <h2>有氧基础测试</h2>
     <p>
       以 E 配速在平坦路段稳定跑满 90 分钟，比较第 10 分钟与第 90 分钟的心率。心率上升越少，有氧基础越稳固。
       漂移 5% 以内为优秀，10% 以内为良好。
@@ -8,7 +7,7 @@
     <details class="howto">
       <summary>测试要求与 FIT 文件导出方法</summary>
       <ol class="small">
-        <li>先在<RouterLink to="/pace/vdot">配速助手</RouterLink>里填一个近期比赛成绩，得到自己的 E 配速。填过之后，这里会自动检查配速是否落在 E 区间。</li>
+        <li>先在<RouterLink to="/vdot">跑力与训练区间</RouterLink>里填一个近期比赛成绩，得到自己的 E 配速。填过之后，这里会自动检查配速是否落在 E 区间。</li>
         <li>选平坦、少红绿灯的路线，充分热身后开始。全程维持配速不变，不要刻意去压心率。</li>
         <li>停下的时间不计入 90 分钟。单次停下不超过 30 秒、累计不超过 90 秒，超过时这次记录不能用于检测。补水尽量控制在 30 秒内。</li>
         <li>建议使用心率带。光学心率在前几分钟和出汗后容易跳动。</li>
@@ -88,33 +87,30 @@
 
   <div v-if="aerobicHistory.length" class="card">
     <h3>我的测试记录</h3>
-    <div class="table-wrap">
-      <table class="num">
-        <thead><tr><th>日期</th><th>有效时长</th><th>距离</th><th>心率漂移</th><th>解耦率</th><th></th></tr></thead>
-        <tbody>
-          <tr v-for="h in aerobicHistory" :key="h.id">
-            <td>{{ formatDate(h.date) }}</td>
-            <td>{{ formatDuration(h.movingSec) }}</td>
-            <td>{{ (h.distanceM / 1000).toFixed(1) }}</td>
-            <td>{{ h.driftPct.toFixed(1) }}%<span v-if="!h.standard" class="muted small"> 非标准</span></td>
-            <td>{{ h.decouplingPct === null ? '—' : h.decouplingPct.toFixed(1) + '%' }}</td>
-            <td><button type="button" class="btn ghost small" @click="remove(h.id)">删除</button></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <ul class="history num">
+      <li v-for="h in aerobicHistory" :key="h.id">
+        <div class="h-main">
+          <strong>{{ h.driftPct.toFixed(1) }}%</strong>
+          <span v-if="!h.standard" class="badge">非标准</span>
+        </div>
+        <div class="h-sub muted small">
+          {{ formatDate(h.date) }} · {{ formatDuration(h.movingSec) }} · {{ (h.distanceM / 1000).toFixed(1) }} 公里 · 解耦 {{ h.decouplingPct === null ? '—' : h.decouplingPct.toFixed(1) + '%' }}
+        </div>
+        <button type="button" class="btn ghost small" @click="remove(h.id)">删除</button>
+      </li>
+    </ul>
     <p class="muted small">只保存符合检测条件的结果摘要，原始文件不保存。隔几周测一次，看漂移是否在下降。</p>
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, ref, shallowRef } from 'vue'
-import HrPaceChart from '../components/HrPaceChart.vue'
-import { parseFit, FitParseError } from '../core/fit'
-import { readFitBytes } from '../core/fileInput'
-import { analyzeAerobic, type AerobicResult } from '../core/aerobic'
-import { aerobicHistory, profile, profileVdot } from '../stores/profile'
-import { formatDuration, formatPace } from '../core/time'
+import HrPaceChart from '../../components/HrPaceChart.vue'
+import { parseFit, FitParseError } from '../../core/fit'
+import { readFitBytes } from '../../core/fileInput'
+import { analyzeAerobic, type AerobicResult } from '../../core/aerobic'
+import { aerobicHistory, profile, profileVdot } from '../../stores/profile'
+import { formatDuration, formatPace } from '../../core/time'
 
 const result = shallowRef<AerobicResult | null>(null)
 const error = ref('')
@@ -207,8 +203,15 @@ function onDrop(e: DragEvent) {
 .verdict.weak { background: #fbefe9; }
 .verdict.invalid { background: #f3f0ea; filter: grayscale(0.6); }
 .verdict-text p { margin: 4px 0 0; }
-.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin: 14px 0 8px; }
+.metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px; margin: 14px 0 8px; }
 .metrics div { display: flex; flex-direction: column; }
 .metrics b { font-size: 1.15rem; }
 .stops { margin-top: 8px; }
+.history { list-style: none; margin: 0; padding: 0; }
+.history li { display: grid; grid-template-columns: 1fr auto; grid-template-areas: 'main del' 'sub del'; gap: 2px 8px; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.history li:last-child { border-bottom: none; }
+.h-main { grid-area: main; display: flex; align-items: center; gap: 8px; }
+.h-main strong { font-size: 1.15rem; }
+.h-sub { grid-area: sub; }
+.history .btn { grid-area: del; align-self: center; }
 </style>
