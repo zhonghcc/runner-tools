@@ -1,0 +1,16 @@
+{
+  "name": "runner-tools-server",
+  "private": true,
+  "version": "0.1.0",
+  "description": "跑者拾穗后端：微信小程序扫码登录与账号",
+  "type": "module",
+  "main": "src/index.js",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/index.js",
+    "test": "node --test test/*.test.js"
+  },
+  "dependencies": {
+    "mysql2": "^3.24.6"
+  }
+}

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1E170E"/>
+      <stop offset="1" stop-color="#0D0B08"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="1024" fill="url(#bg)"/>
+  <!-- 速度线：麦穗向前奔跑 -->
+  <g stroke="#E8B45A" stroke-linecap="round" fill="none">
+    <line x1="168" y1="430" x2="330" y2="430" stroke-width="28" opacity="0.9"/>
+    <line x1="214" y1="512" x2="344" y2="512" stroke-width="28" opacity="0.62"/>
+    <line x1="260" y1="594" x2="358" y2="594" stroke-width="28" opacity="0.36"/>
+  </g>
+  <!-- 前倾的麦穗；麦粒描一圈底色，相互叠压时仍能分清 -->
+  <g transform="rotate(22 560 520)">
+    <path d="M560 830 C560 720 562 560 568 290" stroke="#E8B45A" stroke-width="26" fill="none" stroke-linecap="round"/>
+    <g fill="#E8B45A" stroke="#16110B" stroke-width="14">
+      <ellipse cx="518" cy="590" rx="34" ry="68" transform="rotate(-30 518 590)"/>
+      <ellipse cx="606" cy="600" rx="34" ry="68" transform="rotate(30 606 600)"/>
+      <ellipse cx="520" cy="490" rx="34" ry="68" transform="rotate(-30 520 490)"/>
+      <ellipse cx="608" cy="500" rx="34" ry="68" transform="rotate(30 608 500)"/>
+      <ellipse cx="522" cy="390" rx="34" ry="68" transform="rotate(-30 522 390)"/>
+      <ellipse cx="610" cy="400" rx="34" ry="68" transform="rotate(30 610 400)"/>
+      <ellipse cx="567" cy="286" rx="30" ry="62"/>
+    </g>
+  </g>
+</svg>

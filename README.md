@@ -1,6 +1,6 @@
 # 跑者拾穗
 
-跑者工具集，访问地址：[run.zhonghcc.com](https://run.zhonghcc.com)。纯静态网页，没有后端和数据库，所有计算在浏览器里完成，数据只存在用户自己的设备上。
+跑者工具集，访问地址：[run.zhonghcc.com](https://run.zhonghcc.com)。所有计算在浏览器里完成，成绩和测试记录目前只存在用户自己的设备上。可选的微信登录由一个小后端和配套小程序提供，用于以后的跨设备同步。
 
 ## 页面结构
 
@@ -40,6 +40,28 @@ src/
   views/       HomeView 主页；tools/ 下每个工具一个页面
 tests/         单元测试；有氧测试用 FIT SDK 编码器合成记录来验证
 ```
+
+## 微信登录
+
+个人主体无法使用微信开放平台的网站扫码登录，这里用个人小程序实现：
+
+1. 网页请求 `POST /api/auth/qr`，后端生成一次性票据，调用 `getwxacodeunlimit` 生成指向小程序登录页的小程序码，票据放在 `scene` 里；同时返回只留在该浏览器的 `pollSecret`
+2. 用户用微信扫码进入小程序 `pages/login/index`，点「确认登录」，小程序把 `wx.login` 的 code 和票据发给后端
+3. 后端用 code 换 openid，建立或找到用户，票据标记为已确认
+4. 网页凭 `pollSecret` 轮询到确认结果，后端写入 HttpOnly 会话 Cookie；票据只能领取一次
+
+票据只在内存里，5 分钟过期；会话令牌在库里只存 SHA-256。
+
+```
+server/       后端（Node 20 + mysql2，零框架），只监听本机，由 Web 服务器反代 /api/
+  src/index.js     路由
+  src/tickets.js   扫码票据与限流（有单元测试）
+  src/wechat.js    access_token（稳定版）、code2session、小程序码
+  src/db.js        建表与查询（users、sessions）
+miniprogram/  原生小程序：首页配速换算，登录确认页
+```
+
+后端配置全部来自环境变量（数据库、`MP_APPID`、`MP_SECRET`、`MP_ENV_VERSION`），见 `server/src/config.js`；密钥不进仓库。
 
 ## 有氧基础测试的判定
 

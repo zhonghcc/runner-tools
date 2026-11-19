@@ -1,0 +1,13 @@
+{
+  "desc": "跑者拾穗站点地图；登录确认页只能扫码进入，不参与搜索",
+  "rules": [
+    {
+      "action": "disallow",
+      "page": "pages/login/index"
+    },
+    {
+      "action": "allow",
+      "page": "*"
+    }
+  ]
+}

@@ -26,10 +26,16 @@ export default defineConfig({
       },
       workbox: {
         navigateFallback: '/index.html',
+        // 接口请求不能被离线缓存接管
+        navigateFallbackDenylist: [/^\/api\//],
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
       },
     }),
   ],
+  server: {
+    // 本地开发时把接口转给本机后端
+    proxy: { '/api': 'http://127.0.0.1:3100' },
+  },
   build: {
     sourcemap: false,
   },

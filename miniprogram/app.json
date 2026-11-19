@@ -1,0 +1,16 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/login/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "跑者拾穗",
+    "navigationBarBackgroundColor": "#FBF7EF",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#FBF7EF",
+    "backgroundTextStyle": "light"
+  },
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}

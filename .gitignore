@@ -6,3 +6,7 @@ dev-dist
 
 # 部署脚本与服务器配置只留在本机，不进公开仓库
 deploy.local/
+
+# 品牌目录里只提交手绘的头像源文件，AI 草图和预览图留在本地
+brand/Minimal_*
+brand/.*-circle.png

@@ -6,6 +6,7 @@
           <div class="brand">
             <img src="/favicon.svg" width="44" height="44" alt="" />
             <h1>跑者拾穗</h1>
+            <RouterLink v-if="auth.checked" to="/login" class="account">{{ auth.user ? displayName(auth.user) : '微信登录' }}</RouterLink>
           </div>
           <p class="lead">跑过的每一公里，都是拾起的一束穗。</p>
           <p class="sub">配速、训练区间和有氧基础测试，打开即用，不需要注册，数据只留在你的设备上。</p>
@@ -39,6 +40,7 @@ import QuoteBar from '../components/QuoteBar.vue'
 import ToolIcon from '../components/ToolIcon.vue'
 import SiteFooter from '../components/SiteFooter.vue'
 import { TOOLS } from '../data/tools'
+import { auth, displayName } from '../stores/auth'
 import { profile, profileVdot } from '../stores/profile'
 import { distanceLabel } from '../core/pace'
 import { formatDuration } from '../core/time'
@@ -77,6 +79,17 @@ function onLeave() {
 .hero { display: grid; gap: 4px 32px; padding: 28px 0 12px; }
 .brand { display: flex; align-items: center; gap: 12px; }
 .brand h1 { margin: 0; font-size: 1.7rem; letter-spacing: 3px; }
+.account {
+  margin-left: auto;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--gold-deep);
+  font-size: 0.88rem;
+  white-space: nowrap;
+}
+.account:hover { text-decoration: none; border-color: var(--gold); }
 .lead { font-family: 'Songti SC', 'STSong', 'Noto Serif SC', serif; font-size: 1.1rem; margin: 12px 0 4px; }
 .sub { color: var(--muted); font-size: 0.9rem; }
 .mine {
@@ -172,6 +185,8 @@ function onLeave() {
   .mine { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.10); color: #a89a82; }
   .mine strong { color: #e8b45a; }
   .mine:hover { border-color: rgba(var(--glow), 0.6); }
+  .account { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.12); color: #e8b45a; }
+  .account:hover { border-color: rgba(var(--glow), 0.6); }
 
   .quote-slot :deep(.quote) {
     background: linear-gradient(135deg, rgba(var(--glow), 0.12), rgba(255, 255, 255, 0.03));

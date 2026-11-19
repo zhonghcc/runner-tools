@@ -1,0 +1,23 @@
+{
+  "description": "跑者拾穗小程序：网页扫码登录与配速换算",
+  "packOptions": {
+    "ignore": [
+      {
+        "type": "folder",
+        "value": ".workbuddy"
+      }
+    ],
+    "include": []
+  },
+  "setting": {
+    "bundle": false,
+    "es6": true,
+    "minified": true,
+    "postcss": true,
+    "urlCheck": true
+  },
+  "compileType": "miniprogram",
+  "appid": "touristappid",
+  "projectname": "runner-tools-miniprogram",
+  "miniprogramRoot": "./"
+}

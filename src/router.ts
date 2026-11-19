@@ -9,6 +9,7 @@ export const router = createRouter({
   routes: [
     { path: '/', component: HomeView, meta: { layout: 'home' } },
     ...TOOLS.map((t) => ({ path: t.path, component: t.load, meta: { layout: 'tool', title: t.title } })),
+    { path: '/login', component: () => import('./views/tools/LoginView.vue'), meta: { layout: 'tool', title: '微信登录' } },
     { path: '/:pathMatch(.*)*', redirect: '/' },
   ],
 })
