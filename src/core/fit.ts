@@ -1,5 +1,8 @@
-// FIT 文件解析：只取有氧测试需要的字段，全部在浏览器内完成
-import { Decoder, Stream } from '@garmin/fitsdk'
+// FIT 文件解析：只取有氧测试需要的字段，全部在本机完成（浏览器或小程序里）
+// 先装好 TextDecoder 替代实现，再加载 SDK；只引入解码器，编码器在小程序里用不到
+import './textcodec'
+import Decoder from '@garmin/fitsdk/src/decoder.js'
+import Stream from '@garmin/fitsdk/src/stream.js'
 
 export interface FitRecord {
   ts: number // 毫秒时间戳

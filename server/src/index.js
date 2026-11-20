@@ -53,10 +53,30 @@ function sessionCookie(token, maxAgeSec) {
   return parts.join('; ')
 }
 
+// 网页用 HttpOnly Cookie，小程序没有 Cookie，用 Authorization: Bearer 令牌
+function requestToken(req) {
+  const h = String(req.headers.authorization || '')
+  if (h.startsWith('Bearer ')) return h.slice(7).trim()
+  return parseCookies(req.headers.cookie)[config.cookieName] || ''
+}
+
 async function currentUser(req) {
-  const token = parseCookies(req.headers.cookie)[config.cookieName]
+  const token = requestToken(req)
   if (!token) return null
   return db.findSession(sha256(token))
+}
+
+async function issueSession(userId, req) {
+  const token = randomBytes(32).toString('base64url')
+  await db.insertSession(sha256(token), userId, new Date(Date.now() + config.sessionTtlMs), req.headers['user-agent'])
+  return token
+}
+
+const publicUser = (u) => ({ id: u.id, nickname: u.nickname ?? null, since: u.created_at })
+
+async function mpUserFromCode(code) {
+  const wx = await code2session(code)
+  return db.upsertUserByOpenid(wx.openid, wx.unionid)
 }
 
 function requireMp(res) {
@@ -67,7 +87,7 @@ function requireMp(res) {
 
 function wxErrorMessage(e) {
   if (!(e instanceof WechatError)) return '微信服务暂时不可用，请稍后再试'
-  if (e.errcode === 40029 || e.errcode === 40163) return '登录凭证已失效，请重新扫码'
+  if (e.errcode === 40029 || e.errcode === 40163) return '登录凭证已失效，请重试'
   if (e.errcode === 45011) return '操作太频繁，请稍后再试'
   return '微信服务暂时不可用，请稍后再试'
 }
@@ -97,20 +117,19 @@ const routes = {
     const { ticket, pollSecret } = await readJson(req)
     const r = tickets.poll(ticket, pollSecret)
     if (r.status !== 'confirmed') return send(res, 200, { status: r.status })
-    const token = randomBytes(32).toString('base64url')
-    const expires = new Date(Date.now() + config.sessionTtlMs)
-    await db.insertSession(sha256(token), r.userId, expires, req.headers['user-agent'])
+    const token = await issueSession(r.userId, req)
     send(res, 200, { status: 'confirmed' }, { 'Set-Cookie': sessionCookie(token, Math.round(config.sessionTtlMs / 1000)) })
   },
 
   'GET /api/me': async (req, res) => {
     const u = await currentUser(req)
     if (!u) return send(res, 401, { error: '未登录' })
+    // 未登录与已登录的结果不能被缓存或混用
     send(res, 200, { user: { id: u.user_id, nickname: u.nickname, since: u.created_at } })
   },
 
   'POST /api/auth/logout': async (req, res) => {
-    const token = parseCookies(req.headers.cookie)[config.cookieName]
+    const token = requestToken(req)
     if (token) await db.deleteSession(sha256(token))
     send(res, 200, { ok: true }, { 'Set-Cookie': sessionCookie('', 0) })
   },
@@ -129,15 +148,33 @@ const routes = {
     const { ticket, code } = await readJson(req)
     if (!tickets.get(ticket)) return send(res, 200, { status: 'expired' })
     if (typeof code !== 'string' || !code) return send(res, 400, { error: '缺少登录凭证' })
-    let wx
+    let user
     try {
-      wx = await code2session(code)
+      user = await mpUserFromCode(code)
     } catch (e) {
       console.error('[confirm]', e.message)
       return send(res, 502, { error: wxErrorMessage(e) })
     }
-    const user = await db.upsertUserByOpenid(wx.openid, wx.unionid)
-    send(res, 200, { status: tickets.confirm(ticket, user.id) })
+    const status = tickets.confirm(ticket, user.id)
+    // 确认网页登录的同时，小程序这边也登录上，返回小程序用的令牌
+    if (status !== 'confirmed') return send(res, 200, { status })
+    send(res, 200, { status, token: await issueSession(user.id, req), user: publicUser(user) })
+  },
+
+  // 小程序：直接登录（不经过网页扫码）
+  'POST /api/mp/login/direct': async (req, res) => {
+    if (!requireMp(res)) return
+    if (!mpLimiter.allow(clientIp(req))) return send(res, 429, { error: '操作太频繁' })
+    const { code } = await readJson(req)
+    if (typeof code !== 'string' || !code) return send(res, 400, { error: '缺少登录凭证' })
+    let user
+    try {
+      user = await mpUserFromCode(code)
+    } catch (e) {
+      console.error('[direct]', e.message)
+      return send(res, 502, { error: wxErrorMessage(e) })
+    }
+    send(res, 200, { token: await issueSession(user.id, req), user: publicUser(user) })
   },
 
   'POST /api/mp/login/cancel': async (req, res) => {

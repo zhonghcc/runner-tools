@@ -1,12 +1,36 @@
 # 跑者拾穗
 
-跑者工具集，访问地址：[run.zhonghcc.com](https://run.zhonghcc.com)。所有计算在浏览器里完成，成绩和测试记录目前只存在用户自己的设备上。可选的微信登录由一个小后端和配套小程序提供，用于以后的跨设备同步。
+跑者工具集，访问地址：[run.zhonghcc.com](https://run.zhonghcc.com)。所有计算在浏览器里完成，成绩和测试记录目前只存在用户自己的设备上。代码基于 uni-app（Vue 3 + Vite + TypeScript），一份源码同时编译成网页和微信小程序。可选的微信登录由一个小后端提供，用于以后的跨设备同步。
+
+## 一份代码两端
+
+```bash
+npm run dev:h5      # 网页开发
+npm run dev:mp      # 小程序开发，用微信开发者工具打开 dist/dev/mp-weixin
+npm run build:h5    # 网页产物 dist/build/h5
+npm run build:mp    # 小程序产物 dist/build/mp-weixin
+npm test            # 计算库单元测试
+```
+
+两端差异集中在 `src/utils/platform.ts`（选文件、导出文件、打印）和少量条件编译（`#ifdef H5` / `#ifdef MP-WEIXIN`）：
+
+| 能力 | 网页 | 小程序 |
+|---|---|---|
+| 选 FIT 文件 | 文件选择框、拖拽 | 从微信聊天记录选择 |
+| 心率配速曲线 | SVG | canvas 2D（同一套绘图数据，见 `src/core/chart.ts`） |
+| 登录 | 显示小程序码，扫码确认，HttpOnly Cookie | 微信一键登录，Bearer 令牌 |
+| 导出数据 | 下载 JSON | 发到微信聊天 |
+| 配速手环 | 可打印 | 截屏 |
+| PC 深色主页与卡片照明 | 有 | 无 |
+| 离线可用 | Service Worker | 小程序本身 |
+
+FIT SDK 在小程序里只引入解码器；`src/core/textcodec.ts` 补齐小程序缺少的 TextDecoder，`vite.config.ts` 把 SDK 里的 BigInt 字面量改写为 `BigInt()` 调用以便降级编译。
 
 ## 页面结构
 
 - **主页**：适配 PC 与手机竖屏，所有工具以卡片排列（手机两列、平板三列、PC 四列）。宽度 960px 以上切换为深色背景，鼠标在卡片区移动时，所在卡片内有跟随光源的柔光，相邻卡片的边框也会被照亮。名言只在主页播报
-- **功能页**：每个工具一个独立页面，按手机竖屏设计为单栏（最宽 520px，PC 上居中），顶部只有返回主页，工具之间不互相挂标签。表格按容器宽度而不是屏幕宽度隐藏次要列
-- 工具清单集中在 `src/data/tools.ts`，主页卡片和路由都从这里生成
+- **功能页**：每个工具一个独立页面（`src/pages/*/index.vue`），按手机竖屏设计为单栏（最宽 520px，PC 上居中），顶部只有返回主页，工具之间不互相挂标签。表格按容器宽度而不是屏幕宽度隐藏次要列
+- 工具清单集中在 `src/data/tools.ts`（主页卡片），页面路径在 `src/pages.json`
 
 ## 功能
 
@@ -58,7 +82,6 @@ server/       后端（Node 20 + mysql2，零框架），只监听本机，由 W
   src/tickets.js   扫码票据与限流（有单元测试）
   src/wechat.js    access_token（稳定版）、code2session、小程序码
   src/db.js        建表与查询（users、sessions）
-miniprogram/  原生小程序：首页配速换算，登录确认页
 ```
 
 后端配置全部来自环境变量（数据库、`MP_APPID`、`MP_SECRET`、`MP_ENV_VERSION`），见 `server/src/config.js`；密钥不进仓库。
@@ -76,14 +99,14 @@ miniprogram/  原生小程序：首页配速换算，登录确认页
 
 ```bash
 npm install
-npm run dev      # 开发服务器
+npm run dev:h5   # 网页开发服务器，/api 转给本机 3100 端口
 npm test         # 单元测试
-npm run build    # 类型检查并构建到 dist/
+npm run build    # 类型检查并构建两端
 ```
 
 ## 部署
 
-`npm run build` 产出的 `dist/` 是纯静态文件，可以放在任何静态托管上。Web 服务器需要把找不到的路径回落到 `index.html`（单页应用的前端路由），`index.html` 与 `sw.js` 建议不缓存。
+`npm run build:h5` 产出的 `dist/build/h5/` 是纯静态文件，可以放在任何静态托管上。Web 服务器需要把找不到的路径回落到 `index.html`（单页应用的前端路由），`index.html` 与 `sw.js` 建议不缓存。
 
 ## 已知差异
 

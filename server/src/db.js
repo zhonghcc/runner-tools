@@ -45,6 +45,7 @@ export async function upsertUserByOpenid(openid, unionid) {
     [openid, unionid ?? null],
   )
   const [rows] = await pool.query('SELECT id, nickname, created_at FROM users WHERE mp_openid = ?', [openid])
+  // 返回 id、nickname、created_at
   return rows[0]
 }
 

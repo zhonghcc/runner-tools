@@ -1,29 +1,38 @@
 {
   "name": "runner-tools",
   "private": true,
-  "version": "0.1.0",
-  "description": "跑者拾穗：配速、训练区间、有氧基础测试等跑者工具，纯前端",
-  "type": "module",
+  "version": "0.2.0",
+  "description": "跑者拾穗：配速、训练区间、有氧基础测试等跑者工具。uni-app 一份代码同时出网页与微信小程序",
   "scripts": {
-    "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "test": "vitest run",
-    "typecheck": "vue-tsc --noEmit"
+    "dev:h5": "uni",
+    "dev:mp": "uni -p mp-weixin",
+    "build:h5": "uni build",
+    "build:mp": "uni build -p mp-weixin",
+    "build": "npm run typecheck && npm run build:h5 && npm run build:mp",
+    "typecheck": "vue-tsc --noEmit",
+    "test": "vitest run"
   },
   "dependencies": {
+    "@dcloudio/uni-app": "3.0.0-5030420261029002",
+    "@dcloudio/uni-components": "3.0.0-5030420261029002",
+    "@dcloudio/uni-h5": "3.0.0-5030420261029002",
+    "@dcloudio/uni-mp-weixin": "3.0.0-5030420261029002",
     "@garmin/fitsdk": "^21.222.0",
     "fflate": "^0.8.3",
-    "vue": "^3.5.45",
-    "vue-router": "^5.5.1"
+    "vue": "^3.4.21",
+    "vue-i18n": "^9.1.9"
   },
   "devDependencies": {
-    "@types/node": "^24.19.2",
-    "@vitejs/plugin-vue": "^6.0.11",
-    "typescript": "~5.9",
-    "vite": "^8.3.8",
-    "vite-plugin-pwa": "^2.0.0",
-    "vitest": "^5.1.1",
-    "vue-tsc": "^3.3.14"
+    "@dcloudio/types": "^3.4.8",
+    "@dcloudio/uni-cli-shared": "3.0.0-5030420261029002",
+    "@dcloudio/uni-stacktracey": "3.0.0-5030420261029002",
+    "@dcloudio/vite-plugin-uni": "3.0.0-5030420261029002",
+    "@types/node": "^20",
+    "@vue/tsconfig": "^0.5.1",
+    "typescript": "~5.4.5",
+    "vite": "5.2.8",
+    "vite-plugin-pwa": "^0.20.5",
+    "vitest": "^2.1.9",
+    "vue-tsc": "^2.0.29"
   }
 }

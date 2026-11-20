@@ -1,0 +1,23 @@
+{
+  "name": "跑者拾穗",
+  "appid": "",
+  "description": "配速、训练区间与有氧基础测试",
+  "versionName": "0.2.0",
+  "versionCode": "200",
+  "transformPx": false,
+  "h5": {
+    "title": "跑者拾穗",
+    "router": { "mode": "history", "base": "/" },
+    "devServer": { "port": 5173 },
+    "optimization": { "treeShaking": { "enable": true } }
+  },
+  "mp-weixin": {
+    "appid": "wx8fbbe8f69256024e",
+    "setting": { "urlCheck": true, "es6": true, "minified": true, "postcss": true },
+    "optimization": { "subPackages": true },
+    "lazyCodeLoading": "requiredComponents",
+    "usingComponents": true
+  },
+  "uniStatistics": { "enable": false },
+  "vueVersion": "3"
+}

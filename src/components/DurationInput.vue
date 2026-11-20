@@ -1,13 +1,13 @@
 <template>
-  <div class="hms">
+  <view class="hms">
     <template v-if="withHours">
-      <input type="number" inputmode="numeric" min="0" placeholder="时" :value="parts.h" @input="set('h', $event)" aria-label="时" />
-      <span>:</span>
+      <input class="inp cell" type="number" placeholder="时" :value="parts.h" @input="set('h', $event)" />
+      <text class="sep">:</text>
     </template>
-    <input type="number" inputmode="numeric" min="0" max="59" placeholder="分" :value="parts.m" @input="set('m', $event)" aria-label="分" />
-    <span>:</span>
-    <input type="number" inputmode="numeric" min="0" max="59" placeholder="秒" :value="parts.s" @input="set('s', $event)" aria-label="秒" />
-  </div>
+    <input class="inp cell" type="number" placeholder="分" :value="parts.m" @input="set('m', $event)" />
+    <text class="sep">:</text>
+    <input class="inp cell" type="number" placeholder="秒" :value="parts.s" @input="set('s', $event)" />
+  </view>
 </template>
 
 <script setup lang="ts">
@@ -15,18 +15,17 @@ import { reactive, watch } from 'vue'
 import { splitSeconds } from '../core/time'
 
 // 时分秒三格输入；手机数字键盘没有冒号，分开填更顺手
+defineOptions({ options: { styleIsolation: 'apply-shared' } })
 const props = withDefaults(defineProps<{ modelValue: number | null; withHours?: boolean }>(), { withHours: true })
 const emit = defineEmits<{ 'update:modelValue': [number | null] }>()
 
-const parts = reactive<{ h: string; m: string; s: string }>({ h: '', m: '', s: '' })
+const parts = reactive({ h: '', m: '', s: '' })
 
 function fromValue(v: number | null) {
   if (v === null || !Number.isFinite(v)) return
   const t = splitSeconds(v)
-  const h = props.withHours ? t.h : 0
-  const m = props.withHours ? t.m : t.h * 60 + t.m
-  parts.h = props.withHours ? String(h) : ''
-  parts.m = String(m)
+  parts.h = props.withHours ? String(t.h) : ''
+  parts.m = String(props.withHours ? t.m : t.h * 60 + t.m)
   parts.s = String(t.s)
 }
 fromValue(props.modelValue)
@@ -47,14 +46,15 @@ watch(
   },
 )
 
-function set(key: 'h' | 'm' | 's', e: Event) {
-  parts[key] = (e.target as HTMLInputElement).value
+function set(key: 'h' | 'm' | 's', ev: unknown) {
+  const e = ev as UniInputEvent
+  parts[key] = String(String(e.detail.value ?? '')).replace(/[^0-9]/g, '')
   emit('update:modelValue', totalOfParts())
 }
 </script>
 
 <style scoped>
-.hms { display: flex; align-items: center; gap: 4px; }
-.hms input { width: 4.2em; text-align: center; }
-.hms span { color: var(--muted); }
+.hms { display: flex; align-items: center; }
+.cell { width: 56px; text-align: center; padding: 0 4px; }
+.sep { color: var(--muted); margin: 0 4px; }
 </style>

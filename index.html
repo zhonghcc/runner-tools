@@ -2,17 +2,22 @@
 <html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <script>
+      var coverSupport = 'CSS' in window && typeof CSS.supports === 'function' && (CSS.supports('top: env(a)') || CSS.supports('top: constant(a)'))
+      document.write('<meta name="viewport" content="width=device-width, initial-scale=1.0' + (coverSupport ? ', viewport-fit=cover' : '') + '" />')
+    </script>
     <title>跑者拾穗</title>
-    <meta name="description" content="跑者拾穗：配速换算、跑力与训练区间、心率区间、比赛配速手环、有氧基础测试。纯网页工具，数据只存在你的设备上。" />
+    <meta name="description" content="跑者拾穗：配速换算、跑力与训练区间、心率区间、比赛配速手环、有氧基础测试。打开即用，数据只存在你的设备上。" />
     <meta name="theme-color" content="#B7832F" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" href="/static/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/static/apple-touch-icon.png" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-title" content="跑者拾穗" />
+    <!--preload-links-->
+    <!--app-context-->
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app"><!--app-html--></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>
