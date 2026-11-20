@@ -6,7 +6,7 @@
           <view class="brand">
             <image class="brand-logo" src="/static/favicon.svg" mode="aspectFit" />
             <text class="brand-name">跑者拾穗</text>
-            <text v-if="auth.checked" class="account" @tap="go('/pages/login/index')">{{ auth.user ? displayName(auth.user) : '微信登录' }}</text>
+            <text v-if="auth.checked" class="account" :class="{ cta: !auth.user }" @tap="go('/pages/login/index')">{{ auth.user ? displayName(auth.user) : '登录' }}</text>
           </view>
           <text class="lead">跑过的每一公里，都是拾起的一束穗。</text>
           <text class="sub">配速、训练区间和有氧基础测试，打开即用，不需要注册，数据只留在你的设备上。</text>
@@ -108,6 +108,17 @@ onBeforeUnmount(() => {
   font-size: 13px;
   white-space: nowrap;
 }
+/* 未登录时是实心金色按钮，醒目；登录后退回成显示名字的浅色胶囊 */
+.account.cta {
+  padding: 7px 22px;
+  border: none;
+  background: linear-gradient(135deg, #d49a3e, #b7832f);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  box-shadow: 0 3px 10px rgba(183, 131, 47, 0.35);
+}
 .lead { display: block; font-family: 'Songti SC', 'STSong', 'Noto Serif SC', serif; font-size: 17px; margin: 12px 0 4px; }
 .sub { display: block; color: var(--muted); font-size: 14px; margin-bottom: 8px; }
 .mine {
@@ -161,6 +172,8 @@ onBeforeUnmount(() => {
 /* #ifdef H5 */
 .tile { cursor: pointer; transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease; }
 .account, .mine { cursor: pointer; }
+.account.cta { transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.account.cta:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(183, 131, 47, 0.45); }
 .tile:hover { transform: translateY(-2px); border-color: var(--gold); box-shadow: 0 6px 20px rgba(183, 131, 47, 0.14); }
 
 @media (min-width: 640px) {
@@ -208,7 +221,16 @@ onBeforeUnmount(() => {
   .brand-logo { width: 46px; height: 46px; filter: drop-shadow(0 0 18px rgba(var(--glow), 0.45)); }
   .lead { color: #f3e7cf; font-size: 19px; }
   .sub { color: #a89a82; }
-  .account { background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.12); color: #e8b45a; }
+  /* PC 上登录入口放到页面右上角，不挤在标题旁边 */
+  .account { position: absolute; top: 22px; right: 0; background: rgba(255, 255, 255, 0.05); border-color: rgba(255, 255, 255, 0.12); color: #e8b45a; }
+  .account.cta {
+    padding: 9px 28px;
+    background: linear-gradient(135deg, #f0c470, #d49a3e);
+    color: #1a1307;
+    font-size: 16px;
+    box-shadow: 0 0 0 1px rgba(var(--glow), 0.5), 0 0 24px rgba(var(--glow), 0.35);
+  }
+  .account.cta:hover { box-shadow: 0 0 0 1px rgba(var(--glow), 0.8), 0 0 36px rgba(var(--glow), 0.55); }
   .mine { background: rgba(255, 255, 255, 0.04); border-color: rgba(255, 255, 255, 0.1); color: #a89a82; }
   .mine-v { color: #e8b45a; }
   .quote-slot :deep(.quote) { background: linear-gradient(135deg, rgba(var(--glow), 0.12), rgba(255, 255, 255, 0.03)); border-color: rgba(var(--glow), 0.25); }

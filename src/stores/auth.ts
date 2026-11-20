@@ -76,8 +76,8 @@ export function wxCode(): Promise<string> {
   return new Promise<string>((resolve, reject) => {
     uni.login({
       provider: 'weixin',
-      success: (r) => (r.code ? resolve(r.code) : reject(new Error('微信登录失败，请重试'))),
-      fail: () => reject(new Error('微信登录失败，请重试')),
+      success: (r) => (r.code ? resolve(r.code) : reject(new Error('登录失败，请重试'))),
+      fail: () => reject(new Error('登录失败，请重试')),
     })
   })
 }

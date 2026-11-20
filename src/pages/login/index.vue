@@ -32,9 +32,9 @@
       <button class="btn ghost block gap" hover-class="btn-hover" @tap="doLogout">退出登录</button>
     </view>
 
-    <!-- 小程序：直接用微信登录 -->
+    <!-- 小程序：直接用微信身份登录 -->
     <view v-else-if="isMiniProgram" class="card center">
-      <text class="t">用微信登录</text>
+      <text class="t">登录跑者拾穗</text>
       <text class="muted d">登录只用来识别你是谁，以后你的成绩和测试记录可以在网页和小程序之间同步。不登录也能使用全部工具。</text>
       <button class="btn block" hover-class="btn-hover" :loading="busy" :disabled="busy" @tap="mpLogin">微信一键登录</button>
       <text v-if="error" class="notice error">{{ error }}</text>

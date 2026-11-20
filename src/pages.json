@@ -8,7 +8,7 @@
     { "path": "pages/band/index", "style": { "navigationBarTitleText": "比赛配速手环" } },
     { "path": "pages/plan/index", "style": { "navigationBarTitleText": "课表助手" } },
     { "path": "pages/data/index", "style": { "navigationBarTitleText": "我的数据" } },
-    { "path": "pages/login/index", "style": { "navigationBarTitleText": "微信登录" } }
+    { "path": "pages/login/index", "style": { "navigationBarTitleText": "登录" } }
   ],
   "subPackages": [
     {
