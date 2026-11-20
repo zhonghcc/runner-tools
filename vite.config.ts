@@ -18,7 +18,27 @@ function bigintLiterals(): Plugin {
   }
 }
 
+// uni-app 的小程序运行时直接写 global.createApp 等。真机微信有 global，
+// 但 WorkBuddy 预览器等模拟环境只有 globalThis，vendor 会在中途抛错，后面的导出全部丢失。
+// 在 vendor.js 开头补一句：没有 global 时指向 globalThis；真机上不起作用
+function ensureGlobal(): Plugin {
+  const shim = 'if(typeof global==="undefined"&&typeof globalThis!=="undefined"){globalThis.global=globalThis;}'
+  return {
+    name: 'mp-ensure-global',
+    enforce: 'post',
+    generateBundle(_opts, bundle) {
+      for (const chunk of Object.values(bundle)) {
+        if (chunk.type !== 'chunk' || !chunk.fileName.endsWith('common/vendor.js')) continue
+        chunk.code = chunk.code.startsWith('"use strict";')
+          ? '"use strict";' + shim + chunk.code.slice('"use strict";'.length)
+          : shim + chunk.code
+      }
+    },
+  }
+}
+
 const plugins: Plugin[] = [bigintLiterals(), ...(uni() as unknown as Plugin[])]
+if (platform === 'mp-weixin') plugins.push(ensureGlobal())
 
 // 网页端保留离线可用：静态资源预缓存，开跑前在操场上没网也能算配速
 if (platform === 'h5') {
