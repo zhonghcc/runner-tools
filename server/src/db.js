@@ -1,4 +1,5 @@
 // MySQL 连接与建表。表结构变更只追加，不在启动时删改已有列
+// 所有时间列统一存 UTC（库的默认时区是北京时间，所以写入时显式用 UTC_TIMESTAMP）
 import mysql from 'mysql2/promise'
 import { config } from './config.js'
 
@@ -40,7 +41,7 @@ export async function migrate() {
 
 export async function upsertUserByOpenid(openid, unionid) {
   await pool.query(
-    `INSERT INTO users (mp_openid, unionid, last_login_at) VALUES (?, ?, UTC_TIMESTAMP())
+    `INSERT INTO users (mp_openid, unionid, created_at, last_login_at) VALUES (?, ?, UTC_TIMESTAMP(), UTC_TIMESTAMP())
      ON DUPLICATE KEY UPDATE last_login_at = UTC_TIMESTAMP(), unionid = COALESCE(VALUES(unionid), unionid)`,
     [openid, unionid ?? null],
   )
@@ -50,7 +51,7 @@ export async function upsertUserByOpenid(openid, unionid) {
 }
 
 export async function insertSession(tokenHash, userId, expiresAt, userAgent) {
-  await pool.query('INSERT INTO sessions (token_hash, user_id, expires_at, user_agent) VALUES (?, ?, ?, ?)', [
+  await pool.query('INSERT INTO sessions (token_hash, user_id, created_at, expires_at, user_agent) VALUES (?, ?, UTC_TIMESTAMP(), ?, ?)', [
     tokenHash,
     userId,
     expiresAt,
