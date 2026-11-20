@@ -105,7 +105,7 @@ const routes = {
     const t = tickets.create({ ua: String(req.headers['user-agent'] || '').slice(0, 200) })
     try {
       const png = await createLoginCode(t.ticket)
-      send(res, 200, { ticket: t.ticket, pollSecret: t.pollSecret, expiresIn: t.expiresIn, image: `data:image/png;base64,${png.toString('base64')}` })
+      send(res, 200, { ticket: t.ticket, pollSecret: t.pollSecret, expiresIn: t.expiresIn, image: `data:${png[0] === 0xff && png[1] === 0xd8 ? 'image/jpeg' : 'image/png'};base64,${png.toString('base64')}` })
     } catch (e) {
       console.error('[qr]', e.message)
       send(res, 502, { error: wxErrorMessage(e) })
